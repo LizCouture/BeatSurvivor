@@ -1,0 +1,10 @@
+TODO:
+BEAT ADD THE BEAT - sync all existing functionality to music
+
+Implement event system instead of public methods for enemy, enemy manager, enemy death, bullets, etc.
+
+Implement proper weapon system with inheritence
+Implement proper enemy system with inheritence
+
+Replace enemy up and down spawning with spawning on radius
+Implement waves and wave manager.  Should have shapes and just general radius spawning
