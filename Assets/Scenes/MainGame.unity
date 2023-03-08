@@ -27358,7 +27358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 8542902963639464070, guid: af60bcf24a49ee841b914ecb971c350b, type: 3}
-  timeBetweenFire: 2
+  timeBetweenFire: 4
   knifeProjectiles: []
 --- !u!4 &1873508179 stripped
 Transform:
