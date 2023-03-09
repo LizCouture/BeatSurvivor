@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 // This class is responsible for keeping time to the beat of the music.
 public class Conductor : SingletonMonobehaviour<Conductor>
@@ -18,8 +19,10 @@ public class Conductor : SingletonMonobehaviour<Conductor>
     public float SongPosition { get => songPosition; set => songPosition = value; }
     public float SongPositionInBeats { get => songPositionInBeats; set => songPositionInBeats = value; }
     public float DspSongTime { get => dspSongTime; set => dspSongTime = value; }
+    public float SecPerBeat { get => secPerBeat; set => secPerBeat = value; }
 
-    // Start is called before the first frame update
+    public UnityEvent conductorReady;
+
     void Start()
     {
         if (!musicSource) {
@@ -30,6 +33,7 @@ public class Conductor : SingletonMonobehaviour<Conductor>
 
         // TODO:  This has to sync up to start of the level in some way
         musicSource.Play();
+        conductorReady.Invoke();
     }
 
     // Update is called once per frame
