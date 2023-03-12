@@ -9,10 +9,15 @@ public class Player : SingletonMonobehaviour <Player>{
     public UnityEvent playerHealthChanged;
     public UnityEvent playerHealthMaxChanged;
     public UnityEvent playerDied;
+    public UnityEvent playerGotXP;
 
     [SerializeField] float maxHealth = 5;
     [SerializeField] float currentHealth = 5;
     [SerializeField] float damageCooldown = 0.5f;
+    [SerializeField] float currentXP = 0.0f;
+    [SerializeField] int currentLevel = 1;
+
+    [SerializeField] int[] levels;
 
     private float currentDamageCooldown = 0.0f;
     private Vector2 moveInput;
@@ -24,6 +29,8 @@ public class Player : SingletonMonobehaviour <Player>{
 
     public float CurrentHealth { get => currentHealth; set => currentHealth = value; }
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
+    public float CurrentXP { get => currentXP; set => currentXP = value; }
+    public int CurrentLevel { get => currentLevel; set => currentLevel = value; }
 
     // Start is called before the first frame update
     void Start()
@@ -32,9 +39,14 @@ public class Player : SingletonMonobehaviour <Player>{
         sprite = GetComponentInChildren<SpriteRenderer>();
         animator = GetComponentInChildren<Animator>();
 
+        if (levels.Length < 1) {
+            populateLevels();
+        }
+
         currentHealth = maxHealth;
         playerHealthMaxChanged.Invoke();
         playerHealthChanged.Invoke();
+        playerGotXP.Invoke();
     }
 
     void FixedUpdate() {
@@ -74,11 +86,24 @@ public class Player : SingletonMonobehaviour <Player>{
 
     //Desired Collision behavior:
     // When player comes in contact with an enemy they take damage from that enemy, then get a duration of invincibility == damageCooldown.
+    //
+    // When player comes in contact with a gem, pick it up and increment XP.
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemyComponent)) {
             currentDamageCooldown = 0.0f;
             takeDamage(enemyComponent.HitDamage);
+        } else if (collision.gameObject.TryGetComponent<Gem>(out Gem gemComponent)) {
+            Debug.Log("Hit Gem!  Adding " + gemComponent.XpValue + " xp!");
+            currentXP += gemComponent.XpValue;
+            if (levels[currentLevel] <= currentXP) {
+                Debug.Log("Current Level: " + currentLevel);
+                Debug.Log("Current XP = " + currentXP + ".  XP to next level = " + levels[currentLevel]);
+                currentXP = currentXP - levels[currentLevel];
+                currentLevel++;
+            }
+            playerGotXP.Invoke();
+            gemComponent.Pickup();
         }
     }
 
@@ -93,5 +118,21 @@ public class Player : SingletonMonobehaviour <Player>{
                 takeDamage(enemyComponent.HitDamage);
             }
         } 
+    }
+
+    private void populateLevels() {
+        levels = new int[500];
+        for (int i = 0; i < 500; i++) {
+            if (i == 0) {
+                levels[i] = 0;
+            }
+            if (i < 20) {
+                levels[i] = (i * 10) - 5;
+            } else if (i < 40) {
+                levels[i] = (i * 13) - 6;
+            } else {
+                levels[i] = (i * 16) - 8;
+            }
+        }
     }
 }
