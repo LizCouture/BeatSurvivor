@@ -2,30 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
-public class Player : MonoBehaviour
-{
+public class Player : SingletonMonobehaviour <Player>{
     public float moveSpeed = 1f;
+    public UnityEvent playerHealthChanged;
+    public UnityEvent playerHealthMaxChanged;
+    public UnityEvent playerDied;
 
+    [SerializeField] float maxHealth = 5;
+    [SerializeField] float currentHealth = 5;
+    [SerializeField] float damageCooldown = 0.5f;
+
+    private float currentDamageCooldown = 0.0f;
     private Vector2 moveInput;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator animator;
 
     private bool isRunning;
-    
+
+    public float CurrentHealth { get => currentHealth; set => currentHealth = value; }
+    public float MaxHealth { get => maxHealth; set => maxHealth = value; }
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponentInChildren<SpriteRenderer>();
         animator = GetComponentInChildren<Animator>();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        currentHealth = maxHealth;
+        playerHealthMaxChanged.Invoke();
+        playerHealthChanged.Invoke();
     }
 
     void FixedUpdate() {
@@ -45,5 +54,44 @@ public class Player : MonoBehaviour
             sprite.flipX = false;
         }
         animator.SetBool("isRunning", isRunning);
+    }
+
+    void takeDamage(float damage) {
+        Debug.Log("Player took damage.");
+        CurrentHealth -= damage;
+        currentDamageCooldown = 0.0f;
+        playerHealthChanged.Invoke();
+
+        if (CurrentHealth <= 0) {
+            die();
+        }
+    }
+
+    void die() {
+        Debug.Log("Player Died, oh no!");
+        playerDied.Invoke();
+    }
+
+    //Desired Collision behavior:
+    // When player comes in contact with an enemy they take damage from that enemy, then get a duration of invincibility == damageCooldown.
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemyComponent)) {
+            currentDamageCooldown = 0.0f;
+            takeDamage(enemyComponent.HitDamage);
+        }
+    }
+
+    private void OnCollisionStay2D (Collision2D collision) {
+        Debug.Log("Collision with Player");
+        if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemyComponent)) {
+            if (currentDamageCooldown < damageCooldown) {
+                Debug.Log("damage cooldown: " + currentDamageCooldown);
+                currentDamageCooldown += Time.deltaTime;
+            } else {
+                Debug.Log("Player Hit Enemy");
+                takeDamage(enemyComponent.HitDamage);
+            }
+        } 
     }
 }

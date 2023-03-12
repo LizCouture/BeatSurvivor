@@ -5,12 +5,15 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] float health, maxHealth = 2f;
+    [SerializeField] float hitDamage = 1f;
 
     [SerializeField] float moveSpeed = 1f;
     Rigidbody2D rb;
     Transform target;
     Vector2 moveDirection;
     SpriteRenderer sprite;
+
+    public float HitDamage { get => hitDamage; set => hitDamage = value; }
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();

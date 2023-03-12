@@ -47,20 +47,10 @@ public class KnifeProjectile : MonoBehaviour
         transform.rotation = q;
     }
 
-    private float findQuaternionAngleToLookAt(Vector2 pos) {
-        float x = pos.x - transform.position.x;
-        float y = pos.y - transform.position.y;
-
-        return Mathf.Atan2(x, y) * Mathf.Rad2Deg - 90;
-    }
-    //TODO: On collision, if target is not enemy, destroy it immediately.
-
     private void OnCollisionEnter2D(Collision2D collision) {
-        Debug.Log("Collision with KnifeProjectile");
         if (collision.gameObject.tag == "Player") return;
 
         if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemyComponent)) {
-            Debug.Log("Hit Enemy");
             enemyComponent.TakeDamage(damage);
         } else if (collision.gameObject == target) {
             // If the target isn't an enemy it is a BS target created to send it in a random direction.  Destroy it.
