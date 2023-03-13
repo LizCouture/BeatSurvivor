@@ -144,7 +144,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 0
   maxHealth: 3
+  hitDamage: 1
   moveSpeed: 1
+  gemDropped: {fileID: 3179496927742637296, guid: f9bd8d87a12793a4d990c5a6b396d00b, type: 3}
 --- !u!61 &1305134954585997071
 BoxCollider2D:
   m_ObjectHideFlags: 0

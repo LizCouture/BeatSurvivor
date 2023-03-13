@@ -17,6 +17,8 @@ public class Player : SingletonMonobehaviour <Player>{
     [SerializeField] float currentXP = 0.0f;
     [SerializeField] int currentLevel = 1;
 
+   
+
     [SerializeField] int[] levels;
 
     private float currentDamageCooldown = 0.0f;
@@ -51,6 +53,19 @@ public class Player : SingletonMonobehaviour <Player>{
 
     void FixedUpdate() {
         rb.MovePosition(rb.position + moveInput * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    public void PickupGem(Gem gem) {
+        Debug.Log("Hit Gem!  Adding " + gem.XpValue + " xp!");
+        currentXP += gem.XpValue;
+        if (levels[currentLevel] <= currentXP) {
+            Debug.Log("Current Level: " + currentLevel);
+            Debug.Log("Current XP = " + currentXP + ".  XP to next level = " + levels[currentLevel]);
+            currentXP = currentXP - levels[currentLevel];
+            currentLevel++;
+        }
+        playerGotXP.Invoke();
+        gem.Pickup();
     }
 
     void OnMove(InputValue value) {
@@ -93,17 +108,6 @@ public class Player : SingletonMonobehaviour <Player>{
         if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemyComponent)) {
             currentDamageCooldown = 0.0f;
             takeDamage(enemyComponent.HitDamage);
-        } else if (collision.gameObject.TryGetComponent<Gem>(out Gem gemComponent)) {
-            Debug.Log("Hit Gem!  Adding " + gemComponent.XpValue + " xp!");
-            currentXP += gemComponent.XpValue;
-            if (levels[currentLevel] <= currentXP) {
-                Debug.Log("Current Level: " + currentLevel);
-                Debug.Log("Current XP = " + currentXP + ".  XP to next level = " + levels[currentLevel]);
-                currentXP = currentXP - levels[currentLevel];
-                currentLevel++;
-            }
-            playerGotXP.Invoke();
-            gemComponent.Pickup();
         }
     }
 

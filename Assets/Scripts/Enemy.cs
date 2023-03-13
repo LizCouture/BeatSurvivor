@@ -6,14 +6,16 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField] float health, maxHealth = 2f;
     [SerializeField] float hitDamage = 1f;
-
     [SerializeField] float moveSpeed = 1f;
+    [SerializeField] GameObject gemDropped;
+
     Rigidbody2D rb;
     Transform target;
     Vector2 moveDirection;
     SpriteRenderer sprite;
 
     public float HitDamage { get => hitDamage; set => hitDamage = value; }
+    public GameObject GemDropped { get => gemDropped; set => gemDropped = value; }
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
@@ -41,14 +43,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void OnDestroy() {
-        //TODO: This is so bad fix it.
-        GameObject enemiesManager = GameObject.Find("Enemies");
-        if (enemiesManager) {
-            enemiesManager.GetComponent<EnemyManager>().enemies.Remove(gameObject);
-        }
-    }
-
     void AnimateRun() {
         if (moveDirection.x < 0) {
             sprite.flipX = true;
@@ -60,7 +54,11 @@ public class Enemy : MonoBehaviour
     public void TakeDamage (float damage) {
         health = health - damage;
         if (health <= maxHealth) {
-            Destroy(gameObject);
+            die();
         }
+    }
+
+    private void die() {
+        EnemyManager.Instance.onEnemyDie(gameObject);
     }
 }

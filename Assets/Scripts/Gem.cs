@@ -9,6 +9,7 @@ public class Gem : MonoBehaviour
     public float XpValue { get => xpValue; set => xpValue = value; }
 
     public void Pickup() {
+        GemManager.Instance.RemoveGem(gameObject);
         GameObject.Destroy(gameObject);
     }
 }

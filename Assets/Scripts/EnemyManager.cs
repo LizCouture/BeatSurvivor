@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
-{
+public class EnemyManager : SingletonMonobehaviour <EnemyManager> {
     public GameObject enemyPrefab;
     public float spawnMaxDistance = 10, spawnMinDistance= 7, timeBetweenSpawns = 2.5f;
     private float currentTime;
@@ -49,5 +48,16 @@ public class EnemyManager : MonoBehaviour
     private bool randomBool() {
         if (Random.value >= 0.5) return true;
         return false;
+    }
+
+    public void onEnemyDie(GameObject enemy) {
+        enemies.Remove(enemy);
+
+        if (enemy.TryGetComponent<Enemy>( out Enemy enemyScript)){
+            GameObject gemToSpawn = GameObject.Instantiate(enemyScript.GemDropped, enemy.transform.position, Quaternion.identity, GemManager.Instance.transform);
+            Debug.Log("gemToSpawn " + gemToSpawn);
+            GemManager.Instance.AddGem(gemToSpawn);
+        }
+        GameObject.Destroy(enemy);
     }
 }
