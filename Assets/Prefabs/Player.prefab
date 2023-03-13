@@ -150,14 +150,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3989964135912425596}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -206,6 +206,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
+  playerHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  playerHealthMaxChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  playerDied:
+    m_PersistentCalls:
+      m_Calls: []
+  playerGotXP:
+    m_PersistentCalls:
+      m_Calls: []
+  maxHealth: 5
+  currentHealth: 5
+  damageCooldown: 0.5
+  currentXP: 0
+  currentLevel: 0
+  levels: 
 --- !u!61 &3989964135912425593
 BoxCollider2D:
   m_ObjectHideFlags: 0

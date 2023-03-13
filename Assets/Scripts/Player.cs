@@ -106,6 +106,7 @@ public class Player : SingletonMonobehaviour <Player>{
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemyComponent)) {
+            Debug.Log("HIT ENEMY");
             currentDamageCooldown = 0.0f;
             takeDamage(enemyComponent.HitDamage);
         }

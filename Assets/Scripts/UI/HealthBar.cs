@@ -20,7 +20,9 @@ public class HealthBar : MonoBehaviour
     }
 
     private void setHealth() {
+        setMaxHealth();
         Debug.Log("setHealth to: " + Player.Instance.CurrentHealth);
         slider.value = Player.Instance.CurrentHealth;
+        Debug.Log("slider value = " + slider.value + " out of " + slider.maxValue);
     }
 }
